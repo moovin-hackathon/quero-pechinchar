@@ -1,7 +1,12 @@
 import React from 'react';
 
+import Button from '@material-ui/core/Button';
 // import { Container } from './styles';
 
 export default function Detalhe() {
-  return <h1>DETALHE DO PRODUTO</h1>;
+  return (
+    <Button variant="contained" color="primary">
+      detalhe do produto
+    </Button>
+  );
 }
