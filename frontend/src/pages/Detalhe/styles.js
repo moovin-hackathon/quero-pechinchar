@@ -103,3 +103,50 @@ export const DescriptionText = styled.p`
   font-size: 16px;
   margin-top: 10px;
 `;
+
+export const ContainerModal = styled.div`
+  max-width: 600px;
+  width: 100%;
+  margin: 60px auto;
+  padding: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background: #efefef;
+  border-radius: 4px;
+`;
+
+export const TextShare = styled.p`
+  font-size: 22px;
+  span {
+    font-weight: 600;
+  }
+`;
+
+export const DescriptionCont = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
+
+export const ShareTime = styled.p`
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+export const ButtonShare = styled.button`
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 10px 25px;
+  background: #fff;
+  box-shadow: 0 1px 8px rgba(0,0,0,.3);
+
+  a {
+    text-decoration: none;
+    color: #333;
+  }
+`;
