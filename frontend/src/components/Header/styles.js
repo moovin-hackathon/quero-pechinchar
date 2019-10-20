@@ -8,8 +8,6 @@ export const Container = styled.div`
   box-shadow: 0 1px 8px rgba(0,0,0,.3);
   display: flex;
   justify-content: space-between;
-  position: fixed;
-  z-index: 9999;
 `;
 
 export const List = styled.ul`

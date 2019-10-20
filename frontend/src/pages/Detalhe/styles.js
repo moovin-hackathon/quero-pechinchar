@@ -1,12 +1,17 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  max-width: 1440px;
+  width: 100%;
   margin: 0 auto;
+  height: 100vh;
+`;
+
+export const ProductContainer = styled.div`
+  max-width: 1440px;
   padding: 120px 20px 0 20px;
+  margin: 0 auto;
   width: 100%;
   display: flex;
-  height: 100vh;
   justify-content: center;
 `;
 
