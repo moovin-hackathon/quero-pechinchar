@@ -134,7 +134,8 @@ export default class Detalhe extends Component {
     }
 
     if (!progressDisabled && !progress) {
-      this.setState({ 
+      this.setState({
+        buttonOpen: false,
         progressDisabled: true, 
         messageType: typeMessage,
       });
