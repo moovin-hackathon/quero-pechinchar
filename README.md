@@ -9,6 +9,13 @@
 - Influencia a utilização de redes sociais como modo de divulgação
 - Os consumidores recebem descontos dependendo do quanto o produto foi compartilhado
 
+## Integrantes
+- [Marcos Willian](https://github.com/MarcosWillianR)
+- [Elton Hayashida](https://github.com/EltonH)
+- [Thaty Stober](https://github.com/Thatystober)
+- [Bruno Santos](https://github.com/Brunosantosamaral)
+- [Ander Robson](https://github.com/AnderRobson)
+
 ### Nosso stack
 
 - [Firebase](https://firebase.google.com/)
