@@ -11,7 +11,7 @@
 
 ### Nosso stack
 
-- [Firebase] (https://firebase.google.com/)
+- [Firebase](https://firebase.google.com/)
 - [React](https://github.com/facebookincubator/create-react-app)
 - [Material-UI](https://material-ui.com/)
 
