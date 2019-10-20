@@ -11,8 +11,7 @@
 
 ### Nosso stack
 
-- [Node] (https://nodejs.org/en/)
-- [Mysql] (https://www.mysql.com/)
+- [Firebase] (https://firebase.google.com/)
 - [React](https://github.com/facebookincubator/create-react-app)
 - [Material-UI](https://material-ui.com/)
 
