@@ -28,6 +28,7 @@ export const ListItem = styled.li`
 
 export const Logo = styled.img`
   display: block;
+  margin-right: 135px;
 `;
 
 export const ButtonCart = styled.button`
