@@ -17,7 +17,7 @@
 
 ### Agradecimentos
 
-- A empresa Moovin que organizou o evento
+- A todos emvolvidos na organização do evento e a todos os participantes.
 
 [logo-image]: https://disk.megaimg.net/f80201083756e4af5127496aca488621
 [logo-url]: https://github.com/moovin-hackathon/quero-pechinchar/master/README.md
