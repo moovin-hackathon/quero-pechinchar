@@ -46,9 +46,9 @@ export default class Detalhe extends Component {
   state = {
     progressDisabled: false,
     ModalOpen: false,
-    compartilhado: false,
     messageType: '',
     valorCalc: null,
+    timer: 0,
     product: {
       descricao: '',
       nome: '',
@@ -56,7 +56,7 @@ export default class Detalhe extends Component {
       tempoduracao: null,
       valordescontomaximo: null,
       meta: null,
-      compartilhados: null,
+      compartilhados: 0,
       desconto: null,
     },
     progress : 0
@@ -75,10 +75,6 @@ export default class Detalhe extends Component {
     
   }
 
-  handleBuyModal = () => {
-   return alert('oi');
-  }
-
   componentDidMount() {
     let ref = Firebase.database().ref('/Produto');
     ref.on('value', snapshot => {
@@ -86,6 +82,7 @@ export default class Detalhe extends Component {
       const { descricao, nome, preco, tempoduracao, valordescontomaximo, meta, compartilhados } = Produto[0];
 
       this.setState({
+        timer: (Date.now() + tempoduracao), 
         product: {
           descricao,
           nome,
@@ -94,13 +91,12 @@ export default class Detalhe extends Component {
           valordescontomaximo,
           meta,
           compartilhados,
-          
         },
       })
     });
   }
 
-  changeShares = (compartilhados) => {
+  changeShares = (message, preco, valordescontomaximo, meta, compartilhados, progress) => {
     const shares = compartilhados + 1;
     const { product } = this.state;
 
@@ -114,14 +110,16 @@ export default class Detalhe extends Component {
       ...product,
       compartilhados: shares,
     });
+
+    this.setPriceProduct(message, preco, valordescontomaximo, meta, compartilhados, progress);
   }
 
-  setPriceProduct = (message, preco, valordescontomaximo, meta, compartilhados) => {
+  setPriceProduct = (message, preco, valordescontomaximo, meta, compartilhados, progress) => {
     const { progressDisabled } = this.state;
 
     const valorCalc = preco - (valordescontomaximo / meta * compartilhados);
 
-    if (valorCalc) {
+    if (valorCalc >= 0 ) {
       this.setState({ valorCalc });
     }
 
@@ -132,7 +130,7 @@ export default class Detalhe extends Component {
       typeMessage = 'O tempo para compartilhar acabou, adquira seu produto com desconto!'
     }
 
-    if (!progressDisabled) {
+    if (!progressDisabled && !progress) {
       this.setState({ 
         progressDisabled: true, 
         messageType: typeMessage,
@@ -142,7 +140,7 @@ export default class Detalhe extends Component {
 
 
   render() {
-    const { product, ModalOpen, compartilhado, progressDisabled, messageType, valorCalc } = this.state;
+    const { product, ModalOpen, progressDisabled, messageType, valorCalc } = this.state;
     const { nome, tempoduracao, preco, valordescontomaximo, meta, compartilhados } = product;
     
     if (compartilhados && meta && compartilhados >= meta) {
@@ -155,6 +153,7 @@ export default class Detalhe extends Component {
       }, tempoduracao);
     }
 
+    console.log(Date.now() + product.tempoduracao);
     return (
       <Container>
         <Header />
@@ -175,7 +174,7 @@ export default class Detalhe extends Component {
               <ProductPrice>{valorCalc ? formatPrice(valorCalc) : preco ? formatPrice(preco) : <Loading width="130px" />}</ProductPrice>
               <ButtonContainer>
                 <BuyButton>Comprar</BuyButton>
-                <ShareWithFacebook onClick={compartilhado ? this.handleBuyModal : this.handleModalOpen}>{compartilhado ? 'Comprar' : 'Pechinchar'}</ShareWithFacebook>
+                <ShareWithFacebook onClick={this.handleModalOpen}>{'Pechinchar'}</ShareWithFacebook>
               </ButtonContainer>
               {progressDisabled ? (
                 <MessageType>{messageType}</MessageType>
@@ -201,7 +200,7 @@ export default class Detalhe extends Component {
                 </DescriptionCont>
                 <>
                   <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button" data-size="large">
-                    <ButtonShare onClick={() => this.changeShares(compartilhados)}>
+                    <ButtonShare onClick={() => this.changeShares(null, preco, valordescontomaximo, meta, compartilhados, true)}>
                       <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartilhar</a>
                     </ButtonShare>
                   </div>
