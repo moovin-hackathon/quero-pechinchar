@@ -44,6 +44,7 @@ import { formatPrice } from '../../utils/format';
 
 export default class Detalhe extends Component {
   state = {
+    buttonOpen: true,
     progressDisabled: false,
     ModalOpen: false,
     messageType: '',
@@ -101,6 +102,7 @@ export default class Detalhe extends Component {
     const { product } = this.state;
 
     this.setState({
+      buttonOpen: false,
       product: {
         compartilhados: shares,
       }
@@ -112,6 +114,7 @@ export default class Detalhe extends Component {
     });
 
     this.setPriceProduct(message, preco, valordescontomaximo, meta, compartilhados, progress);
+    this.handleModalClose();
   }
 
   setPriceProduct = (message, preco, valordescontomaximo, meta, compartilhados, progress) => {
@@ -140,7 +143,7 @@ export default class Detalhe extends Component {
 
 
   render() {
-    const { product, ModalOpen, progressDisabled, messageType, valorCalc } = this.state;
+    const { product, ModalOpen, progressDisabled, messageType, valorCalc, buttonOpen } = this.state;
     const { nome, tempoduracao, preco, valordescontomaximo, meta, compartilhados } = product;
     
     if (compartilhados && meta && compartilhados >= meta) {
@@ -174,7 +177,7 @@ export default class Detalhe extends Component {
               <ProductPrice>{valorCalc ? formatPrice(valorCalc) : preco ? formatPrice(preco) : <Loading width="130px" />}</ProductPrice>
               <ButtonContainer>
                 <BuyButton>Comprar</BuyButton>
-                <ShareWithFacebook onClick={this.handleModalOpen}>{'Pechinchar'}</ShareWithFacebook>
+                {buttonOpen && <ShareWithFacebook onClick={this.handleModalOpen}>{'Pechinchar'}</ShareWithFacebook>}
               </ButtonContainer>
               {progressDisabled ? (
                 <MessageType>{messageType}</MessageType>
