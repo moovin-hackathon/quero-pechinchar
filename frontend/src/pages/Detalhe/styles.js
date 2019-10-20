@@ -1,5 +1,16 @@
 import styled from 'styled-components';
 
+export const ProductDescount = styled.span`
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+`;
+
+export const MessageType = styled.h1`
+  line-height: 1.6;
+  margin: 10px 0;
+`;
+
 export const CountContainer = styled.div`
   span {
     font-size: 30px;
