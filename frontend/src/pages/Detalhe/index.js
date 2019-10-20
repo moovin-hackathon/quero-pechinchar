@@ -118,12 +118,12 @@ export default class Detalhe extends Component {
   }
 
   setPriceProduct = (message, preco, valordescontomaximo, meta, compartilhados, progress) => {
-    const { progressDisabled } = this.state;
+    const { progressDisabled, valorCalc } = this.state;
 
-    const valorCalc = preco - (valordescontomaximo / meta * compartilhados);
-
-    if (valorCalc >= 0 ) {
-      this.setState({ valorCalc });
+    const valorCalculed = preco - (valordescontomaximo / meta * compartilhados);
+    
+    if (!valorCalc) {
+      this.setState({ valorCalc: valorCalculed });
     }
 
     let typeMessage;
@@ -157,7 +157,6 @@ export default class Detalhe extends Component {
       }, tempoduracao);
     }
 
-    console.log(Date.now() + product.tempoduracao);
     return (
       <Container>
         <Header />
