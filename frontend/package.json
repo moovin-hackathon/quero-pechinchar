@@ -9,6 +9,7 @@
     "firebase": "^7.2.1",
     "history": "^4.10.1",
     "react": "^16.10.2",
+    "react-countdown-now": "^2.1.1",
     "react-dom": "^16.10.2",
     "react-firebase": "^2.2.8",
     "react-helmet": "^5.2.1",

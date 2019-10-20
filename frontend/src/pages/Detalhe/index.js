@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Firebase from '../../Firebase';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import Countdown from 'react-countdown-now';
 
 import ProgressBar from '../../components/ProgressBar';
 
@@ -21,6 +22,7 @@ import {
   DescriptionTitle,
   DescriptionText,
   FeaturedImageContainer,
+  CountContainer,
 } from './styles';
 
 import Loading from '../../components/Loading';
@@ -45,23 +47,17 @@ export default class Detalhe extends Component {
     let ref = Firebase.database().ref('/Produto');
     ref.on('value', snapshot => {
       const Produto = snapshot.val();
-      const { descricao, nome, preco, porcentagem } = Produto[0];
+      const { descricao, nome, preco, porcentagem, tempoduracao } = Produto[0];
       this.setState({
         product: {
           descricao,
           nome,
           preco: formatPrice(preco),
-          porcentagem
+          porcentagem,
+          tempoduracao
         },
       })
     });
-  }
-
-  handleClick() {
-    console.log('aaa');
-    this.setState({
-      progress : 50
-    })
   }
 
   render() {
@@ -89,7 +85,8 @@ export default class Detalhe extends Component {
                 <BuyButton>Comprar</BuyButton>
                 <ShareWithFacebook>Compartilhar</ShareWithFacebook>
               </ButtonContainer>
-              <ProgressBar variant="determinate" value={product.porcentagem}/>
+              {product.porcentagem ? <ProgressBar variant="determinate" value={product.porcentagem}/> : <Loading width="160px" />}
+              {product.tempoduracao ? (<CountContainer><Countdown date={Date.now() + product.tempoduracao} /></CountContainer>) : <Loading width="160px" />}
               <DescriptionContainer>
                 <DescriptionTitle>Descrição</DescriptionTitle>
                 <DescriptionText>{product.descricao ? product.descricao : <Loading width="220px" />}</DescriptionText>
