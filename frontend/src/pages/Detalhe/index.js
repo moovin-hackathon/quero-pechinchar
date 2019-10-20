@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Firebase from '../../Firebase';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
+import ProgressBar from '../../components/ProgressBar';
 
 import {
   Container,
@@ -17,7 +20,7 @@ import {
   ButtonContainer,
   DescriptionTitle,
   DescriptionText,
-  FeaturedImageContainer
+  FeaturedImageContainer,
 } from './styles';
 
 import Loading from '../../components/Loading';
@@ -35,26 +38,35 @@ export default class Detalhe extends Component {
       nome: '',
       preco: null,
     },
+    progress : 0
   };
 
   componentDidMount() {
     let ref = Firebase.database().ref('/Produto');
     ref.on('value', snapshot => {
       const Produto = snapshot.val();
-      const { descricao, nome, preco } = Produto[0];
+      const { descricao, nome, preco, porcentagem } = Produto[0];
       this.setState({
         product: {
           descricao,
           nome,
-          preco: formatPrice(preco)
+          preco: formatPrice(preco),
+          porcentagem
         },
       })
     });
   }
 
+  handleClick() {
+    console.log('aaa');
+    this.setState({
+      progress : 50
+    })
+  }
+
   render() {
     const { product } = this.state;
-    console.log(product);
+    
     return (
       <Container>
         <Header />
@@ -77,12 +89,14 @@ export default class Detalhe extends Component {
                 <BuyButton>Comprar</BuyButton>
                 <ShareWithFacebook>Compartilhar</ShareWithFacebook>
               </ButtonContainer>
+              <ProgressBar variant="determinate" value={product.porcentagem}/>
               <DescriptionContainer>
                 <DescriptionTitle>Descrição</DescriptionTitle>
                 <DescriptionText>{product.descricao ? product.descricao : <Loading width="220px" />}</DescriptionText>
               </DescriptionContainer>
             </ProductDescriptionContainer>
           </ProductContainer>
+          <Footer />
       </Container>
     )
   }
