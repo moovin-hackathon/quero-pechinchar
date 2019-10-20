@@ -27,7 +27,9 @@ import {
   DescriptionCont,
   TextShare,
   ShareTime,
-  ButtonShare
+  ButtonShare,
+  ProductDescount,
+  MessageType
 } from './styles';
 
 import Loading from '../../components/Loading';
@@ -42,13 +44,20 @@ import { formatPrice } from '../../utils/format';
 
 export default class Detalhe extends Component {
   state = {
+    progressDisabled: false,
     ModalOpen: false,
     compartilhado: false,
-    modalOpen: false,
+    messageType: '',
+    valorCalc: null,
     product: {
       descricao: '',
       nome: '',
       preco: null,
+      tempoduracao: null,
+      valordescontomaximo: null,
+      meta: null,
+      compartilhados: null,
+      desconto: null,
     },
     progress : 0
   };
@@ -74,22 +83,78 @@ export default class Detalhe extends Component {
     let ref = Firebase.database().ref('/Produto');
     ref.on('value', snapshot => {
       const Produto = snapshot.val();
-      const { descricao, nome, preco, porcentagem, tempoduracao } = Produto[0];
+      const { descricao, nome, preco, tempoduracao, valordescontomaximo, meta, compartilhados } = Produto[0];
+
       this.setState({
         product: {
           descricao,
           nome,
-          preco: formatPrice(preco),
-          porcentagem,
-          tempoduracao
+          preco,
+          tempoduracao,
+          valordescontomaximo,
+          meta,
+          compartilhados,
+          
         },
       })
     });
   }
 
+  changeShares = (compartilhados) => {
+    const shares = compartilhados + 1;
+    const { product } = this.state;
+
+    this.setState({
+      product: {
+        compartilhados: shares,
+      }
+    });
+
+    Firebase.database().ref('/Produto/0').set({
+      ...product,
+      compartilhados: shares,
+    });
+  }
+
+  setPriceProduct = (message, preco, valordescontomaximo, meta, compartilhados) => {
+    const { progressDisabled } = this.state;
+
+    const valorCalc = preco - (valordescontomaximo / meta * compartilhados);
+
+    if (valorCalc) {
+      this.setState({ valorCalc });
+    }
+
+    let typeMessage;
+    if (message === 'metaDone') {
+      typeMessage = 'Desconto máximo atingido, garanta já seu produto com desconto!'
+    } else if (message === 'timeout') {
+      typeMessage = 'O tempo para compartilhar acabou, adquira seu produto com desconto!'
+    }
+
+    if (!progressDisabled) {
+      this.setState({ 
+        progressDisabled: true, 
+        messageType: typeMessage,
+      });
+    }
+  }
+
+
   render() {
-    const { product, ModalOpen, compartilhado } = this.state;
+    const { product, ModalOpen, compartilhado, progressDisabled, messageType, valorCalc } = this.state;
+    const { nome, tempoduracao, preco, valordescontomaximo, meta, compartilhados } = product;
     
+    if (compartilhados && meta && compartilhados >= meta) {
+      this.setPriceProduct('metaDone', preco, valordescontomaximo, meta, compartilhados);
+    }
+    
+    if (tempoduracao) {
+      setTimeout(() => {
+        this.setPriceProduct('timeout', preco, valordescontomaximo, meta, compartilhados);
+      }, tempoduracao);
+    }
+
     return (
       <Container>
         <Header />
@@ -106,14 +171,20 @@ export default class Detalhe extends Component {
             </ProductImageContainer>
 
             <ProductDescriptionContainer>
-              <ProductName>{product.nome ? product.nome : <Loading width="160px" />}</ProductName>
-              <ProductPrice>{product.preco ? product.preco : <Loading width="130px" />}</ProductPrice>
+              <ProductName>{nome ? nome : <Loading width="160px" />}</ProductName>
+              <ProductPrice>{valorCalc ? formatPrice(valorCalc) : preco ? formatPrice(preco) : <Loading width="130px" />}</ProductPrice>
               <ButtonContainer>
                 <BuyButton>Comprar</BuyButton>
                 <ShareWithFacebook onClick={compartilhado ? this.handleBuyModal : this.handleModalOpen}>{compartilhado ? 'Comprar' : 'Pechinchar'}</ShareWithFacebook>
               </ButtonContainer>
-              {product.porcentagem ? <ProgressBar variant="determinate" value={product.porcentagem}/> : <Loading width="160px" />}
-              {product.tempoduracao ? (<CountContainer><Countdown date={Date.now() + product.tempoduracao} /></CountContainer>) : <Loading width="160px" />}
+              {progressDisabled ? (
+                <MessageType>{messageType}</MessageType>
+              ) : (
+                <>
+                  <ProgressBar variant="determinate" value={((100 * compartilhados) / meta)}/>
+                  {tempoduracao ? (<CountContainer><Countdown date={Date.now() + product.tempoduracao} /></CountContainer>) : <Loading width="160px" />}
+                </>
+              )}
               <DescriptionContainer>
                 <DescriptionTitle>Descrição</DescriptionTitle>
                 <DescriptionText>{product.descricao ? product.descricao : <Loading width="220px" />}</DescriptionText>
@@ -130,7 +201,7 @@ export default class Detalhe extends Component {
                 </DescriptionCont>
                 <>
                   <div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button" data-size="large">
-                    <ButtonShare onClick={() => this.setState({ compartilhado: true })}>
+                    <ButtonShare onClick={() => this.changeShares(compartilhados)}>
                       <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartilhar</a>
                     </ButtonShare>
                   </div>
