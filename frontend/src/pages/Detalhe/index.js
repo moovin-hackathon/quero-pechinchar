@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Firebase from '../../Firebase';
 import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+import Countdown from 'react-countdown-now';
+
+import ProgressBar from '../../components/ProgressBar';
 
 import {
   Container,
@@ -18,6 +22,7 @@ import {
   DescriptionTitle,
   DescriptionText,
   FeaturedImageContainer,
+  CountContainer,
   ContainerModal,
   DescriptionCont,
   TextShare,
@@ -45,6 +50,7 @@ export default class Detalhe extends Component {
       nome: '',
       preco: null,
     },
+    progress : 0
   };
 
   handleModalOpen = () => {
@@ -68,12 +74,14 @@ export default class Detalhe extends Component {
     let ref = Firebase.database().ref('/Produto');
     ref.on('value', snapshot => {
       const Produto = snapshot.val();
-      const { descricao, nome, preco } = Produto[0];
+      const { descricao, nome, preco, porcentagem, tempoduracao } = Produto[0];
       this.setState({
         product: {
           descricao,
           nome,
-          preco: formatPrice(preco)
+          preco: formatPrice(preco),
+          porcentagem,
+          tempoduracao
         },
       })
     });
@@ -81,7 +89,7 @@ export default class Detalhe extends Component {
 
   render() {
     const { product, ModalOpen, compartilhado } = this.state;
-    console.log(product);
+    
     return (
       <Container>
         <Header />
@@ -104,12 +112,15 @@ export default class Detalhe extends Component {
                 <BuyButton>Comprar</BuyButton>
                 <ShareWithFacebook onClick={compartilhado ? this.handleBuyModal : this.handleModalOpen}>{compartilhado ? 'Comprar' : 'Pechinchar'}</ShareWithFacebook>
               </ButtonContainer>
+              {product.porcentagem ? <ProgressBar variant="determinate" value={product.porcentagem}/> : <Loading width="160px" />}
+              {product.tempoduracao ? (<CountContainer><Countdown date={Date.now() + product.tempoduracao} /></CountContainer>) : <Loading width="160px" />}
               <DescriptionContainer>
                 <DescriptionTitle>Descrição</DescriptionTitle>
                 <DescriptionText>{product.descricao ? product.descricao : <Loading width="220px" />}</DescriptionText>
               </DescriptionContainer>
             </ProductDescriptionContainer>
           </ProductContainer>
+          <Footer />
           {ModalOpen && (
             <Modal open={ModalOpen} onClose={this.handleModalClose}>
               <ContainerModal>

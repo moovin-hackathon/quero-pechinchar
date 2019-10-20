@@ -1,5 +1,15 @@
 import styled from 'styled-components';
 
+export const CountContainer = styled.div`
+  span {
+    font-size: 30px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+`;
+
 export const Container = styled.div`
   width: 100%;
   margin: 0 auto;
@@ -42,6 +52,7 @@ export const FeaturedImage = styled.img`
 export const ProductDescriptionContainer = styled.div`
   flex: 1;
   margin-left: 20px;
+  line-height: 25px;
 `;
 
 export const ProductName = styled.h1`
